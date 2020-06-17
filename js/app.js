@@ -32,7 +32,20 @@ that pleasures have to be repudiated and annoyances accepted.`
  * Start Helper Functions
  * 
 */
+const options = {
+    root: null,
+    threshold: 0.9,
+    rootMargin: '100px'
+}
 
+const observer = new IntersectionObserver(callback, options);
+
+function callback(entries, observer) {
+    entries.forEach(entry => {
+        if (entry.isIntersecting)
+            toggleActiveClasses(entry.target);
+    });
+}
 /**
 * @description Generate A Random Number Between Minimum number and maximum number
 * @param {number} min - The minmum value that generated number won't be lower than it
@@ -74,6 +87,12 @@ function generateSection(order) {
     return section;
 }
 
+// Build menu 
+/**
+* @description Generate Section HTML
+* @param {number} order - order of section which Declare its id and nav
+* @returns {HTMLElement} Nav Html Element
+*/
 function generateNavElement(order) {
     const navEl = document.createElement('li');
     const anchorEl = document.createElement('a');
@@ -88,6 +107,9 @@ function generateNavElement(order) {
     return navEl;
 }
 
+/**
+* @description Build Navs and Sections HTML
+*/
 function generateSectionsAndNav() {
     const numberOfSections = getRandomInt(4, 9);
     const sectionsFragment = document.createDocumentFragment();
@@ -102,7 +124,9 @@ function generateSectionsAndNav() {
     main.appendChild(sectionsFragment);
     nav.append(navElementsFragment);
 }
-
+/**
+* @description Remove Active Class From section and Nav items
+*/
 function clearActiveClass() {
     const activeNavEl = document.querySelector('.active');
     activeNavEl.classList.remove('active');
@@ -110,6 +134,9 @@ function clearActiveClass() {
     activeSection.classList.remove('your-active-class');
 }
 
+/**
+* @description Scroll To The Top Of Window
+*/
 function scrollToTop() {
     window.scrollTo(
         {
@@ -119,8 +146,19 @@ function scrollToTop() {
     );
 }
 
+/**
+* @description Clear Active Classes From Page and Add them to target Section and nav
+* @param {HTMLElement} section
+*/
+function toggleActiveClasses(section) {
+    clearActiveClass();
+    section.classList.add('your-active-class');
+    document.querySelector(`[data-scroll="${section.getAttribute('id')}"]`).classList.add('active');
+}
 
-
+/**
+* @description Show Hide Scroll To Top Button
+*/
 function showHideScrollToTop() {
     const nav = document.getElementById('navbar__list');
     const topBtn = document.getElementById('topBtn');
@@ -131,11 +169,36 @@ function showHideScrollToTop() {
     }
 }
 
+/**
+* @description Set The Intersection Inspector To Inspect Sections
+*/
+function observeSections() {
+    const sectionEls = document.querySelectorAll('section');
+    Array.from(sectionEls).forEach(sectionEl => {
+        observer.observe(sectionEl);
+    })
+}
+
+/**
+* @description Open Close Collpase Paragraphes
+* @param {Event} $event
+*/
+
+function toggleCollapse($event){
+    const header = $event.target;
+    const container = header.parentElement;
+    const paragraph = container.children[1];
+    paragraph.classList.toggle('show');
+}
 
 // Add class 'active' to section when near top of viewport
-
-
 // Scroll to anchor ID using scrollTO event
+// Set sections as active
+
+/**
+* @description Scroll Page To Specified Section on Nav Link Click And Change Classess
+* @param {Event} $event
+*/
 function handleNavLinkClick($event) {
     clearActiveClass();
     const navLink = $event.target;
@@ -150,13 +213,28 @@ function handleNavLinkClick($event) {
     );
 }
 
+/**
+* @description Handle Window Scroll Event
+*/
 function handleWindowScroll() {
     window.addEventListener('scroll', showHideScrollToTop)
 }
 
+/**
+* @description Handle Back To Top Btn Click Event
+*/
 function handleTopBtnClick() {
     const topBtn = document.getElementById('topBtn');
     topBtn.addEventListener('click', scrollToTop);
+}
+/**
+* @description Toggle Paragraphes on It's Header Click
+*/
+function handleCollapsablesClick(){
+    const headers = document.querySelectorAll('.landing__container>h2');
+    Array.from(headers).forEach(header => {
+        header.addEventListener('click',toggleCollapse)
+    });
 }
 
 /**
@@ -165,17 +243,20 @@ function handleTopBtnClick() {
  *
 */
 
+/**
+* @description Wait Untill Load
+*/
 window.addEventListener('DOMContentLoaded', (event) => {
     generateSectionsAndNav();
     handleTopBtnClick();
     handleWindowScroll();
+    observeSections();
+    handleCollapsablesClick();
     scrollToTop();
 });
 
-// Build menu 
 
 // Scroll to section on link click
 
-// Set sections as active
 
 

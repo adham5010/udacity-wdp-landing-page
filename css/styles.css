@@ -79,6 +79,7 @@ section {
   background: #333;
   color: #fff;
   transition: ease 0.3s all;
+  pointer-events: none;
 }
 .navbar__menu .menu__link {
   display: block;
@@ -116,6 +117,19 @@ section {
   background: #333;
   color: #fff;
   transition: ease 0.3s all;
+}
+
+/*collapse style*/
+.landing__container > h2 {
+  cursor: pointer;
+}
+.landing__container > p {
+  display: none;
+  transition: ease 1s all;
+}
+
+.landing__container > p.show {
+  display: block;
 }
 
 /* Header Styles */
